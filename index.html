@@ -1,149 +1,197 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CrazyGames Clicker Edition</title>
-    <!-- CrazyGames SDK v3 Integration -->
-    <script src="https://crazygames.com"></script>
+"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-        body { background: radial-gradient(circle, #2e1a47 0%, #0d0714 100%); color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
-        #game-container { text-align: center; background: rgba(255, 255, 255, 0.05); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); width: 90%; max-width: 450px; }
-        h1 { font-size: 2.2rem; margin-bottom: 5px; color: #ff5722; text-shadow: 0 0 10px rgba(255, 87, 34, 0.5); }
-        .subtitle { font-size: 0.9rem; color: #aaa; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
-        #score-panel { font-size: 3rem; font-weight: bold; margin-bottom: 25px; color: #00ffcc; text-shadow: 0 0 15px rgba(0, 255, 204, 0.4); }
-        #target-btn { width: 160px; height: 160px; border-radius: 50%; border: none; background: linear-gradient(135deg, #ff5722 0%, #ff9800 100%); font-size: 4rem; cursor: pointer; outline: none; box-shadow: 0 8px 25px rgba(255,87,34,0.4); transition: transform 0.05s ease, box-shadow 0.1s ease; margin-bottom: 30px; display: inline-flex; align-items: center; justify-content: center; }
-        #target-btn:active { transform: scale(0.92); box-shadow: 0 4px 10px rgba(255,87,34,0.6); }
-        .btn-panel { display: flex; flex-direction: column; gap: 12px; }
-        button.action-btn { width: 100%; padding: 14px; font-size: 1rem; font-weight: bold; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: background 0.2s, transform 0.1s; }
-        #ad-btn { background: #9c27b0; box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3); }
-        #ad-btn:hover { background: #ba68c8; }
-        #ad-btn:disabled { background: #555; cursor: not-allowed; box-shadow: none; opacity: 0.6; }
-        #reset-btn { background: rgba(255,255,255,0.1); color: #ccc; font-size: 0.85rem; padding: 8px; }
-        #reset-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
-        #status-msg { margin-top: 15px; font-size: 0.85rem; color: #00ffcc; min-height: 18px; font-style: italic; }
+        body { background: radial-gradient(circle, #1a1c2e 0%, #070814 100%); color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }
+        #game-container { text-align: center; background: rgba(255, 255, 255, 0.03); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(10px); width: 90%; max-width: 420px; }
+        h1 { font-size: 2rem; color: #ff5722; text-shadow: 0 0 10px rgba(255, 87, 34, 0.5); margin-bottom: 2px; }
+        .subtitle { font-size: 0.8rem; color: #888; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        #score-panel { font-size: 3.5rem; font-weight: bold; color: #00ffcc; text-shadow: 0 0 15px rgba(0, 255, 204, 0.4); margin-bottom: 5px; }
+        #cps-panel { font-size: 1rem; color: #ffeb3b; margin-bottom: 20px; font-weight: 600; }
+        #target-btn { width: 140px; height: 140px; border-radius: 50%; border: none; background: linear-gradient(135deg, #ff5722 0%, #ff9800 100%); font-size: 3.5rem; cursor: pointer; outline: none; box-shadow: 0 8px 25px rgba(255,87,34,0.4); transition: transform 0.05s ease; margin-bottom: 25px; display: inline-flex; align-items: center; justify-content: center; }
+        #target-btn:active { transform: scale(0.90); }
+        .shop-section { background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .shop-title { font-size: 0.9rem; text-align: left; margin-bottom: 10px; color: #aaa; font-weight: bold; text-transform: uppercase; }
+        .upgrade-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .upgrade-info { text-align: left; }
+        .upgrade-name { font-weight: bold; font-size: 0.95rem; color: #fff; }
+        .upgrade-cost { font-size: 0.85rem; color: #00ffcc; }
+        #buy-autoclicker { background: #00bcd4; color: #fff; border: none; padding: 8px 14px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+        #buy-autoclicker:hover { background: #00e5ff; }
+        #buy-autoclicker:disabled { background: #444; color: #888; cursor: not-allowed; }
+        .btn-panel { display: flex; flex-direction: column; gap: 10px; }
+        button.action-btn { width: 100%; padding: 12px; font-size: 0.95rem; font-weight: bold; color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; }
+        #ad-btn { background: #9c27b0; box-shadow: 0 4px 15px rgba(156, 39, 176, 0.2); }
+        #ad-btn:hover { opacity: 0.9; }
+        #ad-btn:disabled { background: #444; opacity: 0.6; cursor: not-allowed; }
+        #reset-btn { background: transparent; color: #666; font-size: 0.8rem; padding: 4px; }
+        #reset-btn:hover { color: #ff3333; }
+        #status-msg { margin-top: 15px; font-size: 0.8rem; color: #888; min-height: 18px; }
     </style>
 </head>
 <body>
 
     <div id="game-container">
         <h1>CRAZY CLICKER</h1>
-        <div class="subtitle">SDK Integration Template</div>
+        <div class="subtitle">Deluxe Edition</div>
         
         <div id="score-panel">0</div>
+        <div id="cps-panel">Autopilot: 0 clicks/sec</div>
         
         <button id="target-btn">🎮</button>
         
+        <div class="shop-section">
+            <div class="shop-title">Upgrades Shop</div>
+            <div class="upgrade-row">
+                <div class="upgrade-info">
+                    <div class="upgrade-name">Auto-Bot (<span id="auto-count">0</span>)</div>
+                    <div class="upgrade-cost">Cost: <span id="auto-cost">15</span> pts</div>
+                </div>
+                <button id="buy-autoclicker">BUY +1 CPS</button>
+            </div>
+        </div>
+        
         <div class="btn-panel">
-            <button id="ad-btn" class="action-btn">🎬 Watch Ad (Score +25)</button>
-            <button id="reset-btn" class="action-btn">Reset Progress</button>
+            <button id="ad-btn" class="action-btn">🎬 Watch Ad (+50 Points)</button>
+            <button id="reset-btn" class="action-btn">Wipe Save Data</button>
         </div>
 
-        <div id="status-msg">Initializing SDK...</div>
+        <div id="status-msg">Loading SDK Link...</div>
     </div>
 
     <script>
-        // State variables
+        // Game State Variables
         let score = 0;
+        let autoclickers = 0;
+        let autoclickerCost = 15;
         let crazySDK = null;
 
-        // DOM elements
+        // DOM Setup Elements
         const scoreDisplay = document.getElementById('score-panel');
+        const cpsDisplay = document.getElementById('cps-panel');
         const targetBtn = document.getElementById('target-btn');
         const adBtn = document.getElementById('ad-btn');
         const resetBtn = document.getElementById('reset-btn');
         const statusMsg = document.getElementById('status-msg');
+        const autoCountDisplay = document.getElementById('auto-count');
+        const autoCostDisplay = document.getElementById('auto-cost');
+        const buyAutoclickerBtn = document.getElementById('buy-autoclicker');
 
-        // Load saved local data if available
-        if (localStorage.getItem('crazy_clicker_score')) {
-            score = parseInt(localStorage.getItem('crazy_clicker_score'), 10);
-            updateUI();
+        // Load Persistent Browser Saves
+        if (localStorage.getItem('cc_deluxe_score')) {
+            score = parseInt(localStorage.getItem('cc_deluxe_score'), 10);
+            autoclickers = parseInt(localStorage.getItem('cc_deluxe_autos'), 10) || 0;
+            autoclickerCost = parseInt(localStorage.getItem('cc_deluxe_cost'), 10) || 15;
         }
 
-        // Initialize CrazyGames SDK safely
+        // Initialize Official SDK Wrapper Framework
         window.addEventListener('DOMContentLoaded', async () => {
             if (window.CrazyGames && window.CrazyGames.SDK) {
                 try {
                     crazySDK = window.CrazyGames.SDK;
-                    statusMsg.innerText = "CrazyGames SDK active.";
-                    // Signal to CrazyGames that the loading screen has finished
+                    statusMsg.innerText = "CrazyGames Portal System Linked.";
                     crazySDK.game.loadingStop();
                 } catch (e) {
-                    console.error("SDK initialization failure:", e);
-                    statusMsg.innerText = "Running in Local Standalone Mode.";
+                    statusMsg.innerText = "Running Dev Mode Local Sandbox.";
                 }
             } else {
-                statusMsg.innerText = "Running in Local Standalone Mode.";
+                statusMsg.innerText = "Running Dev Mode Local Sandbox.";
             }
+            updateUI();
         });
 
-        // Core Game Mechanics
+        // Main Controller Click Event
         targetBtn.addEventListener('click', () => {
             score += 1;
             updateUI();
             saveProgress();
             
-            // Fire happy-path tracking element if SDK is active
             if (crazySDK) {
                 crazySDK.game.gameplayStart();
             }
         });
 
-        // SDK Midroll/Rewarded Advertisement Action Loop
+        // Buy Automated Upgrades System
+        buyAutoclickerBtn.addEventListener('click', () => {
+            if (score >= autoclickerCost) {
+                score -= autoclickerCost;
+                autoclickers += 1;
+                autoclickerCost = Math.floor(autoclickerCost * 1.5); // Increase cost scale
+                
+                updateUI();
+                saveProgress();
+                statusMsg.innerText = "Purchased Auto-Bot unit successfully!";
+            }
+        });
+
+        // 1-Second Automation Engine Pulse Loop
+        setInterval(() => {
+            if (autoclickers > 0) {
+                score += autoclickers;
+                updateUI();
+                saveProgress();
+            }
+        }, 1000);
+
+        // Ad Rewarded Payout Trigger
         adBtn.addEventListener('click', () => {
-            statusMsg.innerText = "Requesting advertisement stream...";
+            statusMsg.innerText = "Opening Ad Frame Stream...";
             adBtn.disabled = true;
 
             if (crazySDK) {
-                // Execute Official CrazyGames Ad SDK Wrapper
                 crazySDK.ad.requestAd("rewarded", {
-                    adStarted: () => {
-                        statusMsg.innerText = "Advertisement playing...";
-                        console.log("Ad stream active.");
-                    },
+                    adStarted: () => { statusMsg.innerText = "Ad running..."; },
                     adFinished: () => {
-                        score += 25;
+                        score += 50; // Doubled payout for upgraded version
+                        adBtn.disabled = false;
                         updateUI();
                         saveProgress();
-                        adBtn.disabled = false;
-                        statusMsg.innerText = "Success! Earned +25 bonus points.";
+                        statusMsg.innerText = "Bonus +50 Points Applied!";
                     },
-                    adError: (error) => {
-                        console.error("SDK Ad Window Error:", error);
+                    adError: (err) => {
                         adBtn.disabled = false;
-                        statusMsg.innerText = "Ad failed to display. Try again.";
+                        statusMsg.innerText = "Ad system timed out. Try again.";
                     }
                 });
             } else {
-                // Local Sandbox Fallback Emulator Logic
+                // Sandbox Emulator Mode
                 setTimeout(() => {
-                    score += 25;
+                    score += 50;
+                    adBtn.disabled = false;
                     updateUI();
                     saveProgress();
-                    adBtn.disabled = false;
-                    statusMsg.innerText = "[Sandbox Mode] Mimicked Ad completed. +25 added.";
-                }, 1500);
+                    statusMsg.innerText = "[Sandbox Check] Added +50 bonus pts.";
+                }, 1200);
             }
         });
 
-        // Reset tracking
+        // Data Reset Management
         resetBtn.addEventListener('click', () => {
-            if (confirm("Are you sure you want to reset your score?")) {
+            if (confirm("Reset everything back to zero?")) {
                 score = 0;
+                autoclickers = 0;
+                autoclickerCost = 15;
                 updateUI();
                 saveProgress();
-                statusMsg.innerText = "Progress wiped clean.";
+                statusMsg.innerText = "All local engine save state files cleared.";
             }
         });
 
-        // Helper functions
+        // Core Visual View Management Sync
         function updateUI() {
             scoreDisplay.innerText = score;
+            cpsDisplay.innerText = `Autopilot: ${autoclickers} clicks/sec`;
+            autoCountDisplay.innerText = autoclickers;
+            autoCostDisplay.innerText = autoclickerCost;
+            
+            // Toggle buy button state safely
+            buyAutoclickerBtn.disabled = (score < autoclickerCost);
         }
 
+        // Local Browser Save Layer
         function saveProgress() {
-            localStorage.setItem('crazy_clicker_score', score);
+            localStorage.setItem('cc_deluxe_score', score);
+            localStorage.setItem('cc_deluxe_autos', autoclickers);
+            localStorage.setItem('cc_deluxe_cost', autoclickerCost);
         }
     </script>
 </body>
